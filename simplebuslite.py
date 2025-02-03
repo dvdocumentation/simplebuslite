@@ -88,9 +88,9 @@ class SimpleChat(WebSocket):
                            print(self.address, 'closed')
                            self.close(1002,NO_AUTHORIZATION)
                         else:   
-                           tokens[message.get("token")][message.get("from")] = self  
+                           tokens[message.get("token")][message.get("token")] = self  
             else:                
-               tokens[message.get("token")][message.get("from")] = self  
+               tokens[message.get("token")][message.get("token")] = self  
          
          elif message.get("type") == "onlinews":
             if message.get("token") in tokens:
@@ -102,13 +102,14 @@ class SimpleChat(WebSocket):
                            tokens[message.get("token")][message.get("to")].sendMessage(json.dumps(message,ensure_ascii=False))
                      except:   
                         print("Not delivered")
-            else:
-               if "to" in message: 
-                     
-                     if message.get("to") in clients_id_socket:
-                        clients_id_socket[message.get("to")].sendMessage(json.dumps(message))
+               else:
 
-           
+                  if message.get("token") in tokens[message.get("token")]:
+            
+                     try:
+                           tokens[message.get("token")][message.get("token")].sendMessage(json.dumps(message,ensure_ascii=False))
+                     except:   
+                        print("Not delivered")
 
          elif message.get("type") == "connect":
             if "token" in message:
@@ -127,37 +128,22 @@ class SimpleChat(WebSocket):
                         else:   
                            tokens[message.get("token")][message.get("from")] = self
                   else:         
-                     tokens[message.get("token")][message.get("from")] = self  
-               else:
-                  self.close(1002,NO_AUTHORIZATION)   
-            else:   
-               id = message.get("data")
-               password = message.get("password")
-               user = maindb["users"].get(id)
-      
-               if user==None:
-                     self.close(1002,NO_AUTHORIZATION)
-               else:
-                  if not check_password_hash(user['password'], password):
-                     print(self.address, 'closed')
-                     self.close(1002,NO_AUTHORIZATION)
-                  else:   
+                     tokens[message.get("token")][message.get("from")] = self 
 
-                     clients_socket_id[self] = id
-                     clients_id_socket[id] = self
-
-         
+       
 
        except Exception  as e:
          print(e)    
 
     def handleConnected(self):
-       global clients
+      global clients
 
-       print(self.address, 'connected')
+      print(self.address, 'connected')
        
 
-       clients.append(self)
+      clients.append(self)
+      clients_socket_id[self] = id
+      clients_id_socket[id] = self 
        
        
        
