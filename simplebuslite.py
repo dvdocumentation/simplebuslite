@@ -156,6 +156,19 @@ class SimpleChat(WebSocket):
        
        id = clients_socket_id[self]
 
+       for token, token_items in tokens.items():
+          br=False
+          for k,v in  token_items.items():
+            if v==self:
+               br=True
+               del token_items[k]
+
+               if k==token:
+                  del tokens[token]   
+               break
+          if br:
+             break 
+
        del clients_socket_id[self]  
        del clients_id_socket[id]  
 
